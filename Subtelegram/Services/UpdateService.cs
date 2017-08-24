@@ -9,7 +9,8 @@ namespace Subtelegram.Services
     {
         readonly IBotService _botService;
 
-        public UpdateService(IBotService botService){
+        public UpdateService(IBotService botService)
+        {
             _botService = botService;
         }
 
@@ -18,21 +19,20 @@ namespace Subtelegram.Services
 			Console.WriteLine($"Received Message from {update.Message.Chat.Id}");
 
             if (update.Message.Type == MessageType.TextMessage) {
-                if (update.Message.Text.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)){
+                if (update.Message.Text.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
                     ReplyWithSubredditURL(update);
-				}
-                else {
+				} else {
                     Console.WriteLine($"\tNot a message for me");
                 }
 			}
         }
 
-        void ReplyWithSubredditURL(Update update){
+        void ReplyWithSubredditURL(Update update)
+        {
             var message = update.Message;
 			var subreddit = message.Text.Substring(3);
 
-			if (!Regex.IsMatch(subreddit, "^[a-zA-Z0-9_]{1,20}$"))
-			{
+			if (!Regex.IsMatch(subreddit, "^[a-zA-Z0-9_]{1,20}$")) {
 				Console.WriteLine($"\tNot a valid Subreddit name: {subreddit}");
 				return;
 			}

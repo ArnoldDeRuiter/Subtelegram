@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 
 namespace Subtelegram.Services
 {

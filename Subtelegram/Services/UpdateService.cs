@@ -33,7 +33,7 @@ namespace Subtelegram.Services
             var message = update.Message;
 			var subreddit = message.Text.Substring(3);
 
-			if (!Regex.IsMatch(subreddit, "^[a-zA-Z0-9_]{0,20}$") || string.IsNullOrEmpty(subreddit))
+			if (!Regex.IsMatch(subreddit, "^[a-zA-Z0-9_]{1,20}$"))
 			{
 				Console.WriteLine($"\tNot a valid Subreddit name: {subreddit}");
 				return;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -30,7 +31,15 @@ namespace Subtelegram.Services
         void ReplyWithSubredditURL(Update update)
         {
             var message = update.Message;
+
+            // remove /r/ from string
 			var subreddit = message.Text.Substring(3);
+
+            // remove possible text after subreddit name
+            if (subreddit.Any(Char.IsWhiteSpace)) {
+                Console.WriteLine($"\tWhitespace detected, removing excess...");
+                subreddit = subreddit.Substring(0, subreddit.IndexOf(" ", StringComparison.OrdinalIgnoreCase));
+			}
 
 			if (!Regex.IsMatch(subreddit, "^[a-zA-Z0-9_]{1,20}$")) {
 				Console.WriteLine($"\tNot a valid Subreddit name: {subreddit}");

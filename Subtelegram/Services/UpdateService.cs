@@ -22,11 +22,22 @@ namespace Subtelegram.Services
             if (update.Message.Type == MessageType.TextMessage) {
                 if (update.Message.Text.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
                     ReplyWithSubredditURL(update);
-				} else {
+                } else if (update.Message.Text.StartsWith("/help", StringComparison.OrdinalIgnoreCase)) {
+                    ReplyWithHelpMessage(update);
+                } else {
                     Console.WriteLine($"\tNot a message for me");
                 }
 			}
         }
+
+        void ReplyWithHelpMessage(Update update)
+        {
+			var message = update.Message;
+            Console.WriteLine($"\tSending help message to: {message.Chat.Id}");
+            _botService.Client.SendTextMessageAsync(
+                message.Chat.Id, "Just send me a message starting with `/r/SubredditName` and I will send you the URL back!", ParseMode.Markdown).GetAwaiter();
+        }
+
 
         void ReplyWithSubredditURL(Update update)
         {

@@ -20,15 +20,34 @@ namespace Subtelegram.Services
 			Console.WriteLine($"Received Message from {update.Message.Chat.Id}");
 
             if (update.Message.Type == MessageType.TextMessage) {
-                if (update.Message.Text.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
-                    ReplyWithSubredditURL(update);
-                } else if (update.Message.Text.StartsWith("/help", StringComparison.OrdinalIgnoreCase)) {
-                    ReplyWithHelpMessage(update);
-                } else {
-                    Console.WriteLine($"\tNot a message for me");
-                }
+                HandleTextMessageUpdate(update);
+            } else if (update.Message.Type == MessageType.PhotoMessage 
+                       || update.Message.Type == MessageType.VideoMessage 
+                       || update.Message.Type == MessageType.DocumentMessage) {
+                HandleMediaMessageUpdate(update);
+            }
+        }
+
+        void HandleTextMessageUpdate(Update update) 
+        {
+			if (update.Message.Text.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
+				ReplyWithSubredditURL(update);
+			} else if (update.Message.Text.StartsWith("/help", StringComparison.OrdinalIgnoreCase)) {
+				ReplyWithHelpMessage(update);
+			} else {
+				Console.WriteLine($"\tNot a message for me");
 			}
         }
+
+        void HandleMediaMessageUpdate(Update update)
+        {
+            if (update.Message.Caption.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
+                ReplyWithSubredditURL(update);
+            } else {
+                Console.WriteLine($"\tNot a media message for me");
+            }
+        }
+
 
         void ReplyWithHelpMessage(Update update)
         {
@@ -38,13 +57,14 @@ namespace Subtelegram.Services
                 message.Chat.Id, "Just send me a message starting with `/r/SubredditName` and I will send you the URL back!", ParseMode.Markdown).GetAwaiter();
         }
 
-
         void ReplyWithSubredditURL(Update update)
         {
             var message = update.Message;
 
+            var subreddit = message.Text ?? message.Caption;
+
             // remove /r/ from string
-			var subreddit = message.Text.Substring(3);
+            subreddit = subreddit.Substring(3);
 
             // remove possible text after subreddit name
             if (subreddit.Any(Char.IsWhiteSpace)) {

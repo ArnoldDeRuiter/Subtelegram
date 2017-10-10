@@ -41,6 +41,11 @@ namespace Subtelegram.Services
 
         void HandleMediaMessageUpdate(Update update)
         {
+            if (update.Message.Caption == null) {
+                Console.WriteLine($"\tNo caption for media message");
+                return;
+            }
+
             if (update.Message.Caption.StartsWith("/r/", StringComparison.OrdinalIgnoreCase)) {
                 ReplyWithSubredditURL(update);
             } else {
